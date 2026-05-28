@@ -1,0 +1,88 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config ARCH_CHIP_D12X
+	bool
+	default y
+	select ARCH_RV32
+	select ARCH_RV_ISA_M
+	select ARCH_RV_ISA_A
+	select ARCH_RV_ISA_C
+	select ARCH_HAVE_FPU
+	select ARCH_FPU
+    select ARCH_HAVE_RESET
+
+if ARCH_CHIP_D12X
+
+menu "AIC Chip Configuration"
+
+#---------------------------
+# uart device global option
+#---------------------------
+config AIC_USING_UART0
+    bool "Using Uart0"
+    default n
+
+config AIC_USING_UART1
+    bool "Using Uart1"
+    default n
+
+config AIC_USING_UART2
+    bool "Using Uart2"
+    default n
+
+config AIC_USING_UART3
+    bool "Using Uart3"
+    default n
+
+menu "D12X Display Support"
+source "../vendor/artinchip/chips/artinchips/drv/display/Kconfig"
+endmenu
+
+
+#---------------------------
+# i2c device global option
+#---------------------------
+config AIC_USING_SOFT_I2C
+    bool "Using SOFT_I2C"
+    default n
+	select I2C           # Enable bus-level I2C support (required)
+    select I2C_DRIVER    # Enable character device interface (/dev/i2c-x)
+
+config AIC_USING_I2C0
+    bool "Using I2C0"
+    default n
+	select I2C           # Enable bus-level I2C 0 support (required)
+    select I2C_DRIVER    # Enable character device interface (/dev/i2c-x)
+
+config AIC_USING_I2C1
+    bool "Using I2C1"
+    default n
+	select I2C           # Enable bus-level I2C 1 support (required)
+    select I2C_DRIVER    # Enable character device interface (/dev/i2c-x)
+
+config AIC_USING_PWM
+    bool "Using PWM"
+    default n
+	depends on PWM           # Enable bus-level PWM support (required)
+
+
+
+config AIC_USING_CTP
+    bool "using CTP"
+    default n
+
+
+if AIC_USING_CTP
+    source "../vendor/artinchip/chips/artinchips/peripheral/touch/Kconfig"
+endif
+
+source "../vendor/artinchip/chips/artinchips/drv/Kconfig"
+source "../vendor/artinchip/chips/artinchips/hal/Kconfig"
+
+endmenu
+
+
+endif
