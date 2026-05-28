@@ -1,0 +1,45 @@
+#
+# Copyright (c) 2023-2024, ArtInChip Technology Co., Ltd.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+ifeq ($(CONFIG_ARCH_CHIP_CUSTOM),y)
+
+
+
+SRC_D12X_PATH=d12x
+
+
+DEPPATH+=--dep-path $(SRC_D12X_PATH) 
+VPATH+=:chip/$(SRC_D12X_PATH)
+
+ARCH_D12X_SRC_PATH:=$(AIC_SRCDIR)/$(SRC_D12X_PATH)
+ARCH_D12X_PARENT_SRC_PATH:=$(AIC_SRCDIR)
+
+CFLAGS += ${INCDIR_PREFIX}$(ARCH_D12X_SRC_PATH)
+CFLAGS += ${INCDIR_PREFIX}$(ARCH_D12X_PARENT_SRC_PATH)
+CFLAGS += ${INCDIR_PREFIX}${INCLUDES}
+CFLAGS += ${INCDIR_PREFIX}${INCLUDES}/include/drv
+CFLAGS += ${INCDIR_PREFIX}${INCLUDES}/include/hal
+#$(info d12x ${INCDIR_PREFIX}${INCLUDES})
+# HEAD_ASRC is the entry point
+HEAD_ASRC+= $(SRC_D12X_PATH)/d12x_head.S
+HEAD_ASRC+=$(SRC_D12X_PATH)/vectors.S
+HEAD_ASRC+=$(SRC_D12X_PATH)/boot_param_gcc.S
+# Include the  module.
+
+CHIP_CSRCS += $(SRC_D12X_PATH)/d12x_start.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/d12x_irq.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/d12x_clk_cfg.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/d12x_reset_cfg.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/d12x_cache.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/aic_gpio_id.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/sys_freq.c
+CHIP_CSRCS += $(SRC_D12X_PATH)/boot_param.c
+
+
+VPATH += :chip/d12x
+DEPPATH += --dep-path chip/d12x chip/drv/mtd chip/drv
+
+endif
