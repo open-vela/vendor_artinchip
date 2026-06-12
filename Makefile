@@ -1,5 +1,5 @@
 ############################################################################
-# vendor/allwinnertech/Makefile
+# vendor/artinchip/Makefile
 #
 # Copyright (C) 2020 Xiaomi Corporation
 #
