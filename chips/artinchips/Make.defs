@@ -85,10 +85,10 @@ endif
 VPATH += :chip
 DEPPATH += --dep-path chip
 
-#vendor/artinchip 仓库的 Git Commit ID (前8位)
+# vendor/artinchip repository Git Commit ID (first 8 characters)
 AIC_GIT_REV := $(shell cd $(TOPDIR)/../vendor/artinchip && git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
-#将其定义为全局宏传递给编译器
+# Pass Git revision to compiler
 CFLAGS += -DARTINCHIP_GIT_REVERSION=\"$(AIC_GIT_REV)\"
 CFLAGS += -I$(TOPDIR)../nuttx/include/nuttx
 

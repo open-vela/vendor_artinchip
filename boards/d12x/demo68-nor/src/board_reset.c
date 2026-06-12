@@ -37,44 +37,44 @@ int board_reset_cause(struct boardioc_reset_cause_s *cause) {
   /* Map artinchip reboot reasons to NuttX reset causes */
   switch (reboot_reason) {
   case 0: /* NONE */
-  case 1: /* 芯片上电 */
+  case 1: /* Chip power-on */
     cause->cause = BOARDIOC_RESETCAUSE_SYS_CHIPPOR;
     break;
-  case 2: /* 实时时钟看门狗系统复位 */
+  case 2: /* Real-time clock watchdog reset system */
     cause->cause = BOARDIOC_RESETCAUSE_SYS_RWDT;
     break;
-  case 3: /* 低电压系统复位 */
+  case 3: /* Low voltage system reset system */
     cause->cause = BOARDIOC_RESETCAUSE_SYS_BOR;
     break;
-  case 4: /* 软件核心复位 */
+  case 4: /* Software core reset */
     cause->cause = BOARDIOC_RESETCAUSE_CORE_SOFT;
     break;
-  case 5: /* 深度睡眠核心复位 */
+  case 5: /* Deep sleep core reset */
     cause->cause = BOARDIOC_RESETCAUSE_CORE_DPSP;
     break;
-  case 6: /* 主看门狗核心复位 */
+  case 6: /* Main watchdog reset */
     cause->cause = BOARDIOC_RESETCAUSE_CORE_MWDT;
     break;
-  case 7: /* 实时时钟看门狗核心复位 */
+  case 7: /* Real-time clock watchdog reset */
     cause->cause = BOARDIOC_RESETCAUSE_CORE_RWDT;
     break;
-  case 8: /* 主看门狗 CPU 复位 */
+  case 8: /* Main CPU reset */
     cause->cause = BOARDIOC_RESETCAUSE_CPU_MWDT;
     break;
-  case 9: /* 软件 CPU 复位 */
+  case 9: /* Software CPU reset */
     cause->cause = BOARDIOC_RESETCAUSE_CPU_SOFT;
     break;
-  case 10: /* 实时时钟看门狗 CPU 复位 */
+  case 10: /* Real-time clock watchdog CPU reset */
     cause->cause = BOARDIOC_RESETCAUSE_CPU_RWDT;
     break;
-  case 11: /* 引脚复位 */
+  case 11: /* Pin reset */
     cause->cause = BOARDIOC_RESETCAUSE_PIN;
     break;
-  case 12: /* 低功耗复位 */
+  case 12: /* Low power reset */
     cause->cause = BOARDIOC_RESETCAUSE_LOWPOWER;
     break;
   default:
-    /* 未知复位原因 */
+    /* Unknown reset reason */
     cause->cause = BOARDIOC_RESETCAUSE_UNKOWN;
     break;
   }

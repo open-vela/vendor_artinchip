@@ -12,9 +12,9 @@
 extern "C" {
 #endif
 
-/* 模拟获取tick函数 */
+
 static inline uint64_t hal_get_tick(void) {
-  /* 这里只是一个简单实现，实际平台需要根据硬件特性实现 */
+  
   return clock_systime_ticks();
 }
 

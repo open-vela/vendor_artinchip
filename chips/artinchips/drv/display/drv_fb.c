@@ -177,11 +177,11 @@ static int aicfb_updatearea(struct fb_vtable_s *vtable,
   if (!vtable || !fbi || !area)
     return -EINVAL;
 
-  /* 计算区域偏移和大小 */
+  /* Calculate offset and size of the area to update */
   offset = (area->y * fbi->stride) + (area->x * (fbi->bits_per_pixel / 8));
   size = area->h * fbi->stride;
 
-  /* 只清理指定区域的缓存 */
+  /* Clean the cache of the specified area */
   up_clean_dcache((unsigned long)fbi->fb_start + offset,
                   (unsigned long)fbi->fb_start + offset + size);
   return 0;

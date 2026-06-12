@@ -28,7 +28,7 @@ CPICFLAGS = $(ARCHPICFLAGS) $(CFLAGS)
 CXXFLAGS := $(ARCHCXXFLAGS) $(ARCHOPTIMIZATION) $(ARCHCPUFLAGS) $(ARCHXXINCLUDES) $(ARCHDEFINES) $(EXTRAFLAGS) -pipe -Wno-error=implicit-function-declaration -Wno-error=int-conversion -Wno-error=incompatible-pointer-types -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type -Wno-error=implicit-int
 # Use non-threadsafe local static initialization on this target to avoid libsupc++ guard gthread hooks.
 CXXFLAGS += -fno-threadsafe-statics
-# 添加C++标准库包含路径
+# Add C++ standard library include path
 CXXFLAGS += -isystem $(TOPDIR)/../vendor/artinchip/toolchain/riscv64-unknown-elf/include/c++/10.2.0 \
 -isystem $(TOPDIR)/../vendor/artinchip/toolchain/riscv64-unknown-elf/include/c++/10.2.0/riscv64-unknown-elf
 CXXPICFLAGS = $(ARCHPICFLAGS) $(CXXFLAGS)

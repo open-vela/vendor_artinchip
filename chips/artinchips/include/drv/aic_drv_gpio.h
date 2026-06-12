@@ -13,16 +13,16 @@ extern "C" {
 
 #include "aic_hal_gpio.h"
 
-/* GPIO中断回调函数类型 */
+/* GPIO interrupt callback function type */
 typedef void (*gpio_irq_handler_t)(void *arg);
 
-/* GPIO中断配置结构 */
+/* GPIO interrupt configuration structure */
 struct gpio_irq_config_s {
-  uint32_t pin;               /* GPIO引脚号 */
-  uint32_t intr_type;         /* 中断触发类型 */
-  gpio_irq_handler_t handler; /* 中断处理函数 */
-  void *arg;                  /* 传递给处理函数的参数 */
-  bool enabled;               /* 是否启用 */
+  uint32_t pin;               /* GPIO pin number */
+  uint32_t intr_type;         /* Interrupt trigger type */
+  gpio_irq_handler_t handler; /* Interrupt handler function */
+  void *arg;                  /* Argument passed to the handler function */
+  bool enabled;               /* Whether enabled */
 };
 
 void drv_pin_bias_set(unsigned int pin, unsigned int pull);

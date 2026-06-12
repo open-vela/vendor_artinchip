@@ -147,12 +147,12 @@ static void aic_gpio_button_enable(FAR const struct btn_lowerhalf_s *lower,
   }
 }
 
-/* 按钮下半部驱动操作结构体 */
+/* Button lower half driver operation structure */
 static const struct btn_lowerhalf_s g_aic_gpio_button_lower = {
     .bl_supported = aic_gpio_button_supported,
     .bl_buttons = aic_gpio_button_buttons,
     .bl_enable = aic_gpio_button_enable,
-    .bl_write = NULL, /* 不需要写入功能 */
+    .bl_write = NULL, /* No write function required */
 };
 
 /****************************************************************************
@@ -279,7 +279,7 @@ int aic_gpio_button_register(uint32_t pin, uint32_t id, bool pressed_state,
 
   /* Initialize private data */
   memset(priv, 0, sizeof(*priv));
-  /* 使用标准的下半部驱动结构体 */
+  /* Use standard lower half driver structure for button driver */
   memcpy(&priv->lower, &g_aic_gpio_button_lower,
          sizeof(struct btn_lowerhalf_s));
 

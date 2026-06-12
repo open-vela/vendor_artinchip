@@ -125,7 +125,7 @@ int main(int argc, FAR char *argv[])
   pfd.fd     = fd;
   pfd.events = POLLIN;
 
-  /* 响应 Ctrl+C，优雅退出主循环 */
+  /* Response Ctrl+C */
   int running = 1;
   void sigint_handler(int signo) {
     running = 0;

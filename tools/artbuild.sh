@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# 获取脚本所在的真实物理路径（处理软核链接）
+# Get the real physical path of the script (handle soft links)
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -10,11 +10,11 @@ while [ -h "$SOURCE" ]; do
 done
 SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-# 定位到 SDK 根目录 (由于该脚本在 vendor/artinchip/tools/，根目录是上三级)
+# Locate the SDK root directory (since the script is in vendor/artinchip/tools/, the root is three levels up)
 SDK_ROOT=$(cd "$SCRIPT_DIR/../../../" && pwd)
 
-# 自动安装 commit-msg 钩子 (方案3实现)
-# 确保在 vendor/artinchip 项目中可以使用 Change-Id 进行代码评审
+# Install commit-msg hook automatically (solution 3 implementation)
+# Ensure that Change-Id can be used in the vendor/artinchip project for code review
 HOOKS_DIR="$SDK_ROOT/vendor/artinchip/.git/hooks"
 REPO_HOOK="$SDK_ROOT/.repo/repo/hooks/commit-msg"
 
@@ -24,8 +24,13 @@ if [ -d "$HOOKS_DIR" ] && [ -f "$REPO_HOOK" ] && [ ! -f "$HOOKS_DIR/commit-msg" 
     chmod +x "$HOOKS_DIR/commit-msg"
 fi
 
+if [ -d "$SCRIPT_DIR/../toolchain" ]; then
+    chmod +x $SCRIPT_DIR/env.sh
+    $SCRIPT_DIR/env.sh 
+fi
 
-# 帮助信息
+
+# Show help message
 function show_help() {
     echo "Usage: ./artbuild.sh [PROJECT] [OPTION]"
     echo ""
@@ -59,20 +64,20 @@ if [ $# -ge 2 ]; then
 opt=$2
 fi
 
-# 定义板级配置路径
+# Define board configuration path for the project
 BOARD_CONFIG_DIR="vendor/artinchip/boards/d12x/demo68-nor/configs/$pro"
 BOARD_NAME=$(echo $BOARD_CONFIG_DIR | cut -d'/' -f5)
 CHIP_NAME=$(echo $BOARD_CONFIG_DIR | cut -d'/' -f4)
 IMAGE_NAME="${CHIP_NAME}_${BOARD_NAME}_v1.0.0.img"
 
 
-# 检查是否请求帮助
+# Check if help requests are made
 if [ "$opt" == "help" ] || [ "$opt" == "-h" ] || [ "$opt" == "--help" ]; then
     show_help
     exit 0
 fi
 
-# 如果没有参数，默认进行编译和打包
+# If no option is provided, default to build + pack
 if [ -z "$opt" ]; then
    echo "No option provided. Defaulting to: build + pack"
    cd "$SDK_ROOT"
@@ -87,7 +92,7 @@ if [ -z "$opt" ]; then
    exit 0
 fi
 
-# 增加 build 参数：执行 build only
+# Add build option: execute build only
 if [ "$opt" == "build" ]; then
    echo "No option provided. Defaulting to: build only"
    cd "$SDK_ROOT"
@@ -95,33 +100,33 @@ if [ "$opt" == "build" ]; then
    exit 0
 fi
 
-# 增加 clean 参数：执行 distclean
+# Add clean option: execute distclean with path recovery
 if [ "$opt" == "clean" ]; then
    echo "Cleaning: distclean with path recovery"
    cd "$SDK_ROOT"
    
-   # 1. 彻底移除引起冲突的各项
+   # 1. Remove all conflicting files
    rm -rf nuttx/arch/risc-v/src/chip
    rm -rf nuttx/include/arch
    rm -f nuttx/Make.defs
 
 fi
 
-# 增加 rebuild 参数：执行 distclean + build + pack
+# Add rebuild option: execute distclean + build + pack
 if [ "$opt" == "rebuild" ]; then
    echo "Rebuilding: distclean + build + pack"
    cd "$SDK_ROOT"
    
-   # 1. 彻底移除引起冲突的各项
+   # 1. Remove all conflicting files
    rm -rf nuttx/arch/risc-v/src/chip
    rm -rf nuttx/include/arch
    rm -f nuttx/Make.defs
 
-   # 2. 解析 defconfig 获取芯片绝对路径 (适配 SDK_ROOT)
+   # 2. Parse defconfig to get chip absolute path (adapt SDK_ROOT)
    DEFCONFIG="$SDK_ROOT/$BOARD_CONFIG_DIR/defconfig"
    if [ -f "$DEFCONFIG" ]; then
        CHIP_VAL=$(grep "^CONFIG_ARCH_CHIP_CUSTOM_DIR=" "$DEFCONFIG" | cut -d'=' -f2 | tr -d '"')
-       CHIP_REL=${CHIP_VAL#../} # 去除 ../
+       CHIP_REL=${CHIP_VAL#../} 
        CHIP_ABS="$SDK_ROOT/$CHIP_REL"
        
        if [ -d "$CHIP_ABS" ]; then
@@ -133,7 +138,7 @@ if [ "$opt" == "rebuild" ]; then
        fi
    fi
 
-   # 3. 补齐板级配置链接
+   # 3. Parse board configuration to get Make.defs path (adapt SDK_ROOT)
    MAKEDEFS_SRC="$SDK_ROOT/$BOARD_CONFIG_DIR/../../scripts/Make.defs"
    if [ -f "$MAKEDEFS_SRC" ]; then
        ln -sf "$MAKEDEFS_SRC" "$SDK_ROOT/nuttx/Make.defs"

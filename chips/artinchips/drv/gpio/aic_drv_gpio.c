@@ -33,24 +33,24 @@ struct aic_gpio_dev_s {
   pin_interrupt_t callback;
 };
 #endif
-/* GPIO中断条目 */
+/* GPIO interrupt entry structure */
 struct gpio_irq_entry_s {
-  uint32_t pin;               /* GPIO引脚号 */
-  uint32_t intr_type;         /* 中断触发类型 */
-  gpio_irq_handler_t handler; /* 中断处理函数 */
-  void *arg;                  /* 传递给处理函数的参数 */
-  bool enabled;               /* 是否启用 */
-  bool work_scheduled;        /* 是否已计划工作 */
-  struct work_s work; /* 工作结构体，用于中断处理的下半部 */
+  uint32_t pin;               /* GPIO pin number/ID */
+  uint32_t intr_type;         /* Interrupt trigger type */
+  gpio_irq_handler_t handler; /* Interrupt handler function */
+  void *arg;                  /* Argument passed to the handler */
+  bool enabled;               /* Enabled */
+  bool work_scheduled;        /* Work scheduled for interrupt handler */
+  struct work_s work; /* Work structure for interrupt handler */
 };
 
-/* GPIO中断链表头 */
+/* GPIO interrupt list head */
 static struct gpio_irq_entry_s *g_gpio_irq_list[GPIO_MAX_PIN] = {};
 
-/* 自旋锁保护中断链表 */
+/* Spinlock to protect GPIO interrupt list */
 static spinlock_t g_gpio_irq_lock;
 
-/* GPIO中断是否已初始化 */
+/* GPIO interrupt initialized flag */
 static bool g_gpio_irq_initialized = false;
 
 #if defined(CONFIG_DEV_GPIO)
@@ -250,7 +250,7 @@ int gpio_get_value(uint32_t pin) {
   int pin_index = GPIO_GROUP_PIN(pin);
   unsigned int status;
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     gpioinfo("GPIO Get Value: pin=%ld (group=%d, index=%d) error\n", pin, group,
              pin_index);
@@ -267,7 +267,7 @@ int gpio_set_value(uint32_t pin, bool value) {
   int group = GPIO_GROUP(pin);
   int pin_index = GPIO_GROUP_PIN(pin);
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     return -EINVAL;
   }
@@ -290,8 +290,7 @@ static void gpio_irq_work(FAR void *arg) {
   /* Process all buttons to find which one needs debouncing */
 
   if (entry->work_scheduled) {
-    /* 这里需要做成一个工作队列，因为有多个中断发生时，需要按顺序处理，不能在中断上下文中处理过多逻辑
-     */
+    
     gpioinfo("INFO[%d]: GPIO IRQ: pin=%ld  %x\n", __LINE__, entry->pin,
              (unsigned int)entry->arg);
     entry->handler(entry->arg);
@@ -304,9 +303,9 @@ static void gpio_irq_work(FAR void *arg) {
  * Name: gpio_interrupt
  *
  * Description:
- *   GPIO中断服务程序
- *   这个函数被注册到D12X_IRQ_GPIO中断
- *   它会检查所有启用的GPIO中断，并调用相应的处理函数
+ *   GPIO interrupt service routine
+ *   This function is registered to D12X_IRQ_GPIO interrupt
+ *   It checks all enabled GPIO interrupts and calls the corresponding handler functions.
  *
  ****************************************************************************/
 
@@ -316,12 +315,12 @@ int gpio_interrupt(int irq, void *context, void *arg) {
   unsigned int group_irq_sta;
   unsigned int group_irq_en;
   int ret = OK;
-  /* 遍历所有GPIO中断条目 */
+  /* Process all GPIO interrupts */
   irqstate_t flags = spin_lock_irqsave(&g_gpio_irq_lock);
   int pin_group = 0;
   while (pin_group < GPIO_GROUP_MAX) {
 
-    /* 获取GPIO中断状态 */
+    /* Process GPIO interrupt status */
     hal_gpio_group_get_irq_stat(pin_group, &group_irq_sta);
     hal_gpio_group_get_irq_en(pin_group, &group_irq_en);
     irq_status = group_irq_sta & group_irq_en;
@@ -329,10 +328,9 @@ int gpio_interrupt(int irq, void *context, void *arg) {
     while (irq_status != 0) {
       if (irq_status & 0x1) {
 
-        // 这里需要做成一个工作队列，因为有多个中断发生时，需要按顺序处理，不能在中断上下文中处理过多逻辑
-        /* 处理该引脚的中断 */
+        /* Process interrupt for this pin group */
         int pin_number = pin_group * 32 + bit_pos;
-        /* 查找对应的中断处理函数并调用 */
+        /* Find corresponding handler function and call */
 
         entry = g_gpio_irq_list[pin_number];
         if (entry != NULL && entry->enabled && entry->handler != NULL) {
@@ -369,7 +367,7 @@ int gpio_interrupt(int irq, void *context, void *arg) {
  * Name: gpio_irq_initialize
  *
  * Description:
- *   初始化GPIO中断子系统
+ *   Initialize GPIO interrupt subsystem
  *
  ****************************************************************************/
 
@@ -381,14 +379,14 @@ int gpio_irq_initialize(void) {
   }
   spin_lock_init(&g_gpio_irq_lock);
   memset(g_gpio_irq_list, 0, sizeof(g_gpio_irq_list));
-  /* 注册GPIO中断服务程序 */
+  /* Register GPIO interrupt service routine */
   ret = irq_attach(D12X_IRQ_GPIO, gpio_interrupt, NULL);
   if (ret < 0) {
     gpioerr("Failed to attach GPIO interrupt handler: %d\n", ret);
     return ret;
   }
 
-  /* 使能GPIO中断 */
+  /* Enable GPIO interrupt */
   up_enable_irq(D12X_IRQ_GPIO);
 
   g_gpio_irq_initialized = true;
@@ -414,7 +412,7 @@ struct gpio_irq_entry_s *gpio_irq_allocate_entry(void) {
  * Name: gpio_irq_free_entry
  *
  * Description:
- *   释放GPIO中断条目
+ *   Free GPIO interrupt entry
  *
  ****************************************************************************/
 
@@ -428,7 +426,7 @@ void gpio_irq_free_entry(struct gpio_irq_entry_s *entry) {
  * Name: gpio_irq_attach
  *
  * Description:
- *   为指定GPIO引脚注册中断处理函数
+ *   Attach GPIO interrupt handler to specified GPIO pin
  *
  ****************************************************************************/
 
@@ -440,7 +438,7 @@ int gpio_irq_attach(uint32_t pin, gpio_irq_handler_t handler, void *arg) {
   int pin_index = GPIO_GROUP_PIN(pin);
   unsigned int status;
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     return -EINVAL;
   }
@@ -449,7 +447,7 @@ int gpio_irq_attach(uint32_t pin, gpio_irq_handler_t handler, void *arg) {
     return -EINVAL;
   }
 
-  /* 确保GPIO中断子系统已初始化 */
+  /* Ensure GPIO interrupt subsystem is initialized */
   if (!g_gpio_irq_initialized) {
     ret = gpio_irq_initialize();
     if (ret < 0) {
@@ -459,12 +457,12 @@ int gpio_irq_attach(uint32_t pin, gpio_irq_handler_t handler, void *arg) {
 
   flags = spin_lock_irqsave(&g_gpio_irq_lock);
 
-  /* 检查是否已存在该引脚的条目 */
+  /* Check if entry already exists */
   entry = g_gpio_irq_list[pin];
   if (entry != NULL) {
-    /* 更新现有条目 */
+    /* Update existing entry */
     if (entry->enabled) {
-      /* 如果中断已启用，先禁用以避免竞争条件 */
+      /* Disable interrupt if already enabled */
       hal_gpio_disable_irq(group, pin_index);
     }
 
@@ -476,10 +474,10 @@ int gpio_irq_attach(uint32_t pin, gpio_irq_handler_t handler, void *arg) {
   } else {
     hal_gpio_get_func(group, pin_index, &status);
     if (status != 1) {
-      return -EINVAL; /* 该引脚未配置为GPIO功能，无法附加处理函数 */
+      return -EINVAL; /* Pin is not configured as GPIO function, cannot attach handler */
     }
 
-    /* 创建新条目 */
+    /* Create new entry */
     entry = g_gpio_irq_list[pin] = gpio_irq_allocate_entry();
     if (entry == NULL) {
       spin_unlock_irqrestore(&g_gpio_irq_lock, flags);
@@ -502,7 +500,7 @@ int gpio_irq_attach(uint32_t pin, gpio_irq_handler_t handler, void *arg) {
  * Name: gpio_irq_detach
  *
  * Description:
- *   解除指定GPIO引脚的中断注册
+ *   Detach GPIO interrupt handler from specified GPIO pin
  *
  ****************************************************************************/
 
@@ -510,7 +508,7 @@ int gpio_irq_detach(uint32_t pin) {
   struct gpio_irq_entry_s *entry;
   irqstate_t flags;
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     return -EINVAL;
   }
@@ -524,7 +522,7 @@ int gpio_irq_detach(uint32_t pin) {
     return OK;
   }
   if (entry->work_scheduled) {
-    /* 如果有工作计划，先取消 */
+    /* Cancel work if scheduled */
     work_cancel(HPWORK, &entry->work);
     entry->work_scheduled = false;
   }
@@ -539,7 +537,7 @@ int gpio_irq_detach(uint32_t pin) {
  * Name: gpio_irq_enable
  *
  * Description:
- *   启用指定GPIO引脚的中断
+ *   Enable GPIO interrupt for specified GPIO pin
  *
  ****************************************************************************/
 
@@ -549,7 +547,7 @@ int gpio_irq_enable(uint32_t pin) {
   int group = GPIO_GROUP(pin);
   int pin_index = GPIO_GROUP_PIN(pin);
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     return -EINVAL;
   }
@@ -577,7 +575,7 @@ int gpio_irq_enable(uint32_t pin) {
  * Name: gpio_irq_disable
  *
  * Description:
- *   禁用指定GPIO引脚的中断
+ *   Disable GPIO interrupt for specified GPIO pin
  *
  ****************************************************************************/
 
@@ -587,7 +585,7 @@ int gpio_irq_disable(uint32_t pin) {
   int group = GPIO_GROUP(pin);
   int pin_index = GPIO_GROUP_PIN(pin);
 
-  /* 参数检查 */
+  /* Parameter check */
   if (pin >= GPIO_MAX_PINS) {
     return -EINVAL;
   }
@@ -613,7 +611,7 @@ int gpio_irq_disable(uint32_t pin) {
  * Name: gpio_irq_configure
  *
  * Description:
- *   批量配置多个GPIO中断
+ *   Configure multiple GPIO interrupts at once
  *
  ****************************************************************************/
 

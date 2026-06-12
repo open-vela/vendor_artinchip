@@ -23,8 +23,8 @@
  ****************************************************************************/
 
 #define BUTTON_DEVICE "/dev/buttons"
-#define BUTTON_PIN1 "PA.0" /* 使用GPIO0作为示例，请根据实际硬件修改 */
-#define BUTTON_PIN2 "PA.1" /* 使用GPIO0作为示例，请根据实际硬件修改 */
+#define BUTTON_PIN1 "PA.0" /* use GPIO0 as example, please modify it according to actual hardware. */
+#define BUTTON_PIN2 "PA.1" /* use GPIO1 as example, please modify it according to actual hardware. */
 #define BUTTON_ID1 0
 #define BUTTON_ID2 1
 
@@ -38,7 +38,7 @@ static int button_test_poll(void) {
   int ret;
   uint8_t buffer[16];
 
-  /* 打开按钮设备 */
+  /* Open button device */
   fd = open(BUTTON_DEVICE, O_RDONLY);
   if (fd < 0) {
     syslog(LOG_INFO, "ERROR: Failed to open %s: %d\n", BUTTON_DEVICE, errno);
@@ -48,13 +48,13 @@ static int button_test_poll(void) {
   syslog(LOG_INFO, "Button test started. Press and release the button...\n");
   syslog(LOG_INFO, "Press Ctrl+C to exit.\n");
 
-  /* 配置poll */
+  /* Configure poll for button device */
   fds.fd = fd;
   fds.events = POLLIN;
   fds.revents = 0;
 
   while (1) {
-    /* 等待按钮事件 */
+    /* Wait for button event */
     ret = poll(&fds, 1, -1);
     if (ret < 0) {
       if (errno == EINTR) {
@@ -66,10 +66,10 @@ static int button_test_poll(void) {
     }
 
     if (fds.revents & POLLIN) {
-      /* 读取按钮状态 */
+      /* Read button state */
       ret = read(fd, buffer, sizeof(buffer));
       if (ret > 0) {
-        /* 按钮状态在buffer中，格式为按钮ID和状态 */
+        /* Button state is in buffer, format is button ID and state */
         if (ret >= 2) {
           uint8_t state = (buffer[0] >> BUTTON_ID1) & 0x01;
 
@@ -100,7 +100,7 @@ int main(int argc, FAR char *argv[])
   syslog(LOG_INFO, "=== ArtInChip GPIO Button Driver Test ===\n");
   syslog(LOG_INFO, "This test demonstrates GPIO button event reporting.\n");
 
-  /* 检查参数 */
+  /* Check arguments */
   if (argc > 1) {
     syslog(LOG_INFO, "Usage: %s\n", argv[0]);
     syslog(LOG_INFO, "No arguments required.\n");
@@ -108,8 +108,8 @@ int main(int argc, FAR char *argv[])
   }
 
   pin = hal_gpio_name2pin(BUTTON_PIN1);
-  /* 注册GPIO按钮驱动 */
-  /* 注意：这里假设按钮按下时为低电平（active low） */
+  /* Register GPIO button driver */
+  /* Note: here we assume button is active low. */
   ret = aic_gpio_button_register(pin, BUTTON_ID1, true, NULL);
   if (ret < 0) {
     syslog(LOG_INFO, "ERROR: Failed to register GPIO button: %d\n", ret);
@@ -136,10 +136,10 @@ int main(int argc, FAR char *argv[])
          "Pin=%s, ID=%d, Active Low=%s Pin=%s, ID=%d, Active Low=%s\n",
          BUTTON_PIN1, BUTTON_ID1, "true", BUTTON_PIN2, BUTTON_ID2, "true");
 
-  /* 运行按钮测试 */
+  /* Run button test */
   ret = button_test_poll();
 
-  /* 注销按钮驱动 */
+  /* Unregister GPIO button driver */
   aic_gpio_button_unregister(pin);
   // aic_gpio_button_unregister(pin2);
   syslog(LOG_INFO, "GPIO button unregistered.\n");

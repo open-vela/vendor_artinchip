@@ -412,10 +412,10 @@ static int sfud_mtd_write(struct mtd_dev *mtd, u32 offset, u8 *data, u32 len) {
   return sfud_write(flash, start, dolen, data);
 }
 
-/* NuttX 标准 MTD 操作函数 */
+/* NuttX standard MTD operation function */
 static int sfud_mtd_erase_nuttx(FAR struct mtd_dev_s *dev, off_t startblock,
                                 size_t nblocks) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   if (!aic_mtd ||
       (aic_mtd->size / aic_mtd->erasesize < (startblock + nblocks))) {
     nor_err("sfud_mtd_erase_nuttx: startblock=%ld, nblocks=%d, size=%d\n",
@@ -436,11 +436,11 @@ static int sfud_mtd_erase_nuttx(FAR struct mtd_dev_s *dev, off_t startblock,
 
 static ssize_t sfud_mtd_bread_nuttx(FAR struct mtd_dev_s *dev, off_t startblock,
                                     size_t nblocks, FAR unsigned char *buffer) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   sfud_err ret = SFUD_SUCCESS;
   if (!aic_mtd)
     return -1;
-  unsigned int offset = startblock * 512; /* 假设块大小为512字节 */
+  unsigned int offset = startblock * 512; /* Assume block size is 512 bytes */
   unsigned int len = nblocks * 512;
   ret = sfud_mtd_read(aic_mtd, offset, buffer, len);
   if (ret != SFUD_SUCCESS)
@@ -452,11 +452,11 @@ static ssize_t sfud_mtd_bread_nuttx(FAR struct mtd_dev_s *dev, off_t startblock,
 static ssize_t sfud_mtd_bwrite_nuttx(FAR struct mtd_dev_s *dev,
                                      off_t startblock, size_t nblocks,
                                      FAR const unsigned char *buffer) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   sfud_err ret = SFUD_SUCCESS;
   if (!aic_mtd)
     return -1;
-  unsigned int offset = startblock * 512; /* 假设块大小为512字节 */
+  unsigned int offset = startblock * 512; /* Assume block size is 512 bytes */
   unsigned int len = nblocks * 512;
   ret = sfud_mtd_write(aic_mtd, offset, (unsigned char *)buffer, len);
   if (ret != SFUD_SUCCESS)
@@ -467,7 +467,7 @@ static ssize_t sfud_mtd_bwrite_nuttx(FAR struct mtd_dev_s *dev,
 
 static ssize_t sfud_mtd_read_nuttx(FAR struct mtd_dev_s *dev, off_t offset,
                                    size_t nbytes, FAR unsigned char *buffer) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   sfud_err ret = SFUD_SUCCESS;
   if ((!aic_mtd))
     return -1;
@@ -481,7 +481,7 @@ static ssize_t sfud_mtd_read_nuttx(FAR struct mtd_dev_s *dev, off_t offset,
 __attribute__((unused)) static ssize_t
 sfud_mtd_write_nuttx(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes,
                      FAR const uint8_t *buffer) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   sfud_err ret = SFUD_SUCCESS;
   if (!aic_mtd)
     return -1;
@@ -494,7 +494,7 @@ sfud_mtd_write_nuttx(FAR struct mtd_dev_s *dev, off_t offset, size_t nbytes,
 
 static int sfud_mtd_ioctl_nuttx(FAR struct mtd_dev_s *dev, int cmd,
                                 unsigned long arg) {
-  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // 强制类型转换
+  struct mtd_dev *aic_mtd = (struct mtd_dev *)dev; // Typecast to mtd_dev structure
   switch (cmd) {
   case MTDIOC_GEOMETRY: {
     FAR struct mtd_geometry_s *geo = (FAR struct mtd_geometry_s *)arg;
@@ -528,38 +528,10 @@ static int sfud_mtd_isbad_nuttx(FAR struct mtd_dev_s *dev, off_t block) {
 
   flash = (sfud_flash *)aic_mtd->priv;
 
-  /* SPI NOR 闪存通常没有坏块概念，直接返回 GOODBLOCK */
-  /* 如果需要实现坏块检测，可以检查特定地址的坏块标记 */
-
-  /* 检查闪存是否支持坏块检测 */
   if (flash->chip.capacity <= 0) {
     return -EIO;
   }
 
-  /* 计算物理块地址 */
-  // off_t physical_block = block;
-
-  /* SPI NOR 闪存通常没有坏块，直接返回 GOODBLOCK */
-  /* 如果闪存支持坏块管理，可以在这里实现检测逻辑 */
-
-  /* 示例：检查特定块是否为坏块 */
-  /*
-  unsigned char buf[256];
-  off_t offset = physical_block * flash->chip.erase_gran;
-
-  if (sfud_read(flash, offset, 256, buf) != SFUD_SUCCESS) {
-      return -EIO;  // 读取失败，可能是坏块
-  }
-
-  // 检查坏块标记（具体标记取决于闪存型号）
-  // if (buf[0] == 0xFF && buf[1] == 0xFF) {  // 示例：全FF表示好块
-  //     return 0;  // GOODBLOCK
-  // } else {
-  //     return 1;  // BADBLOCK
-  // }
-  */
-
-  /* 默认返回 GOODBLOCK */
   return 0; // GOODBLOCK
 }
 
@@ -573,43 +545,22 @@ sfud_mtd_markbad_nuttx(FAR struct mtd_dev_s *dev, off_t block) {
 
   flash = (sfud_flash *)aic_mtd->priv;
 
-  /* SPI NOR 闪存通常不支持坏块标记，但可以模拟实现 */
-  /* 检查闪存是否有效 */
   if (flash->chip.capacity <= 0) {
     return -EIO;
   }
 
-  /* 计算物理块地址 */
+  /* absolute address */
   off_t physical_block = block;
   off_t offset = physical_block * flash->chip.erase_gran;
 
-  /* 检查块地址是否有效 */
+  /* check block address is valid */
   if (offset >= flash->chip.capacity) {
     return -EINVAL;
   }
 
-  /* SPI NOR 闪存通常没有坏块标记功能，这里模拟实现 */
-  /* 实际应用中，SPI NOR 闪存很少需要坏块标记 */
-
-  /* 可选：在特定位置写入坏块标记 */
-  /*
-  unsigned char bad_block_marker[] = {0xBA, 0xDB, 0xAD, 0x00};  // 坏块标记
-
-  // 尝试在块的开头写入坏块标记
-  sfud_err result = sfud_write(flash, offset, sizeof(bad_block_marker),
-  bad_block_marker); if (result != SFUD_SUCCESS) { nor_err("Failed to mark block
-  %ld as bad at offset 0x%lx\n", block, offset); return -EIO;
-  }
-
-  nor_info("Block %ld marked as bad at offset 0x%lx\n", block, offset);
-  */
-
-  /* 对于 SPI NOR 闪存，通常只需要记录坏块信息，不需要物理标记 */
-  /* 可以在这里实现坏块信息记录逻辑 */
-
   nor_info("Block %ld marked as bad (simulated for SPI NOR)\n", block);
 
-  return 0; // 成功
+  return 0; 
 }
 
 sfud_flash *spinor_init(unsigned int spi_bus) {
@@ -746,14 +697,11 @@ sfud_flash *spinor_init(unsigned int spi_bus) {
     mtd->priv = &qspi->attached_flash;
     mtd->attr = p->attr;
 
-    // 修正方案：增大缓冲区并优化处理
-    char devname[MAX_MTD_NAME+6]; // 增大缓冲区到32字节
+    char devname[MAX_MTD_NAME+6];
 
-    // 计算最大可用的分区名长度
-    int max_name_len = sizeof(devname) - strlen("/dev/") - 1; // 减1为null终止符
+    int max_name_len = sizeof(devname) - strlen("/dev/") - 1;
 
     if (strlen(p->name) >= max_name_len) {
-      // 分区名过长，进行截断处理
       snprintf(devname, sizeof(devname), "/dev/%.*s", max_name_len, p->name);
       nor_info("Partition name truncated: original='%s', used='%s'\n", p->name,
                devname);

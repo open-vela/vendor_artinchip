@@ -34,7 +34,7 @@ include $(AIC_VENDOR_DIR)/chips/artinchips/drv/pwm/Make.defs
 endif
 
 
-# SPI/QSPI 驱动
+# SPI/QSPI driver
 ifeq ($(CONFIG_AIC_QSPI_DRV),y)
   include $(AIC_VENDOR_DIR)/chips/artinchips/drv/qspi/Make.defs
   include $(AIC_VENDOR_DIR)/chips/artinchips/drv/spi/Make.defs
@@ -44,7 +44,7 @@ ifeq ($(CONFIG_USING_MTD),y)
   include $(AIC_VENDOR_DIR)/chips/artinchips/drv/mtd/Make.defs
 endif
 
-# SPINOR 驱动
+# SPINOR driver
 ifeq ($(CONFIG_AIC_SPINOR_DRV),y)
   include $(AIC_VENDOR_DIR)/chips/artinchips/drv/spinor/Make.defs
 endif

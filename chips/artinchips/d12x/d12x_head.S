@@ -21,7 +21,7 @@ __Vectors:
     .long   __trap_vec      /* 0 */
     .long   __trap_vec      /* 1 */
     .long   __trap_vec      /* 2 */
-    .long   __trap_vec      /* 3,以前是PendSV_Handler,这块需要修改 */
+    .long   __trap_vec      /* 3, PendSV_Handler */
     .long   __trap_vec      /* 4 */
     .long   __trap_vec      /* 5 */
     .long   __trap_vec      /* 6 */

@@ -28,7 +28,7 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-/* TODO: 从 SDK 的头文件中确认中断数量 */
+/* TODO:  Confirm interrupt number from SDK header file */
 #ifndef NR_IRQS
 #define NR_IRQS MAX_IRQn
 #endif

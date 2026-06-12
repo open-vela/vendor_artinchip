@@ -861,6 +861,7 @@ static sdio_capset_t aic_sdio_capabilities(struct sdio_dev_s *dev) {
   }
 
   caps |= SDIO_CAPS_MMC_HS_MODE;
+  caps |= SDIO_CAPS_DMABEFOREWRITE;
   return caps;
 }
 
