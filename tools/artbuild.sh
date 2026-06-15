@@ -13,6 +13,12 @@ SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Locate the SDK root directory (since the script is in vendor/artinchip/tools/, the root is three levels up)
 SDK_ROOT=$(cd "$SCRIPT_DIR/../../../" && pwd)
 
+if [  ! -d "$SCRIPT_DIR/../toolchain" ]; then
+    echo "Info: Toolchain directory not found. Setting up toolchain..."
+    chmod +x $SCRIPT_DIR/env.sh
+    $SCRIPT_DIR/env.sh 
+fi
+
 # Install commit-msg hook automatically (solution 3 implementation)
 # Ensure that Change-Id can be used in the vendor/artinchip project for code review
 HOOKS_DIR="$SDK_ROOT/vendor/artinchip/.git/hooks"
@@ -24,10 +30,6 @@ if [ -d "$HOOKS_DIR" ] && [ -f "$REPO_HOOK" ] && [ ! -f "$HOOKS_DIR/commit-msg" 
     chmod +x "$HOOKS_DIR/commit-msg"
 fi
 
-if [ -d "$SCRIPT_DIR/../toolchain" ]; then
-    chmod +x $SCRIPT_DIR/env.sh
-    $SCRIPT_DIR/env.sh 
-fi
 
 
 # Show help message
