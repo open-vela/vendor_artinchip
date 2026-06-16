@@ -1,0 +1,21 @@
+#
+# Copyright (c) 2024 ArtInChip Technology Co., Ltd.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+config AIC_TS_TEST
+	bool "ArtInChip Touchscreen Test"
+	default n
+	---help---
+		Enable the ArtInChip touchscreen test application.
+
+if AIC_TS_TEST
+
+config AIC_TS_TEST_DEVPATH
+	string "Touchscreen Device Path"
+	default "/dev/input0"
+	---help---
+		Path to the touchscreen input device.
+
+endif

@@ -1,0 +1,43 @@
+
+
+config D12X_DEMO_NSH
+	bool "Enable the NSH function on the 'D12X_DEMO' board"
+
+config ARCH_BOARD_D12X_DEMO
+    select ARCH_FPU
+    select ARCH_RV_ISA_M
+    select ARCH_RV_ISA_A
+    select ARCH_RV_ISA_C
+    select ONESHOT_COUNT
+    bool "Enable the 'D12X_DEMO' board"
+
+if ARCH_BOARD_D12X_DEMO
+
+choice
+    prompt "Target Board Selection"
+    default AIC_TARGET_D12X_DEMO68_NOR
+    help
+      Select the target board configuration.
+
+config AIC_TARGET_D12X_DEMO68_NOR
+    bool "Demo68 NOR"
+
+config AIC_TARGET_D12X_DEMO68_NAND
+    bool "Demo68 NAND"
+
+config AIC_TARGET_D12X_DEMO68_MMC
+    bool "Demo68 MMC"
+
+config AIC_TARGET_D12X_HMI_NOR
+    bool "HMI NOR"
+
+endchoice
+
+config AIC_TARGET_DIR_NAME
+    string
+    default "demo68-nor" if AIC_TARGET_D12X_DEMO68_NOR
+    default "demo68-nand" if AIC_TARGET_D12X_DEMO68_NAND
+    default "demo68-mmc" if AIC_TARGET_D12X_DEMO68_MMC
+    default "hmi-nor" if AIC_TARGET_D12X_HMI_NOR
+
+endif

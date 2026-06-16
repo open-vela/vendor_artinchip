@@ -1,0 +1,36 @@
+# Boot configuration file
+# Used in SD Card FAT32 boot and USB Disk upgrade.
+# Format:
+# protection=part1 name,part2 name,part3 name
+#   Protects partitions from being overwritten when they are upgraded.
+# boot0=size@offset
+#   boot0 size and location offset in 'image' file, boot rom read it.
+# boot0=example.bin
+#   boot0 image is file example.bin, boot rom read it.
+# boot1=size@offset
+#   boot1 size and location offset in 'image' file, boot0 read it.
+# boot1=example.bin
+#   boot1 image is file example.bin, boot0 read it.
+# image=example.img
+#   Packed image file is example.img, boot1 use it.
+# 
+# For Direct Mode.
+# boot0=bootloader.aic
+# writetype=spi-nor
+#           Value can be: spi-nor spi-nand mmc
+# writeintf=0
+#           Default is 0 if this key is not provided
+# writeboot=bootloader.aic
+#           It is required for spi-nand to update bootloader.
+# write0=data0.bin,0x1000
+#           writeX=file,offset,attribute
+#           writeX=file,offset
+#           writeX=file
+#           X can be 0 ~ 31
+#           if offset is absent, default value is 0
+#           e.g.: write3=data.fatfs,0x100000,nftl
+
+
+# bootloader.aic
+boot0=0x39110@0x8200
+image=d12x_demo68-nor_v1.0.0.img
