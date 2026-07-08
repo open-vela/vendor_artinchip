@@ -14,5 +14,6 @@ boards/d12x/demo68-nor/src/libboard.a
 **/.built
 **/.kconfig
 .kconfig
-Kconfig
 toolchain/
+/Kconfig
+apps/Kconfig
