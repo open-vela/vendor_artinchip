@@ -15,3 +15,4 @@ config  DRIVER_SDMC_HAL_EN
 if DRIVER_SDMC_HAL_EN
 source "../vendor/artinchip/chips/artinchips/hal/sdmc/Kconfig"
 endif
+

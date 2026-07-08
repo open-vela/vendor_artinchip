@@ -65,4 +65,14 @@ ifeq ($(CONFIG_AIC_SDMC_DRV),y)
   include $(AIC_VENDOR_DIR)/chips/artinchips/drv/sdmc/Make.defs
 endif
 
+# GE driver
+ifeq ($(CONFIG_AIC_GE_DRV),y)
+include $(AIC_VENDOR_DIR)/chips/artinchips/drv/ge/Make.defs
+endif
+
+# VE driver
+ifeq ($(CONFIG_AIC_VE_DRV),y)
+include $(AIC_VENDOR_DIR)/chips/artinchips/drv/ve/Make.defs
+endif
+
 endif

@@ -59,4 +59,14 @@ endif
 ifeq ($(CONFIG_DRIVER_SDMC_HAL_EN), y)
 include $(AIC_VENDOR_DIR)/chips/artinchips/hal/sdmc/Make.defs
 endif
+
+# HAL Drivers: GE (Graphics Engine)
+ifeq ($(CONFIG_AIC_GE_DRV),y)
+include $(AIC_VENDOR_DIR)/chips/artinchips/hal/ge/Make.defs
+endif
+
+# HAL Drivers: VE (Video Engine)
+ifeq ($(CONFIG_AIC_VE_DRV),y)
+include $(AIC_VENDOR_DIR)/chips/artinchips/hal/ve/Make.defs
+endif
 endif
