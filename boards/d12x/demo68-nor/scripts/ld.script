@@ -18,7 +18,7 @@ ENTRY(__start)
 /* PSRAM Size Configuration - Select ONE */
 /* #define PSRAM_SIZE 16M */  /* 128 Mb */
 /* #define PSRAM_SIZE 8M  */  /* 64 Mb  */
-#define PSRAM_SIZE 4M          /* 32 Mb  - Default */
+#define PSRAM_SIZE 8M          /* 8 Mb  - Default */
 
 MEMORY
 {

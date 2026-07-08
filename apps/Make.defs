@@ -34,3 +34,24 @@
 ############################################################################
 
 include $(wildcard $(APPDIR)/vendor/artinchip/apps/*/Make.defs)
+
+# Chip macro derived from Kconfig (same as kernel-side chips/artinchips/Make.defs)
+ifeq ($(CONFIG_ARCH_CHIP_D12X),y)
+CFLAGS += -DAIC_CHIP_D12X
+endif
+
+ifeq ($(CONFIG_AIC_GE_DITHER),y)
+CFLAGS += -DAIC_GE_DITHER
+endif
+
+# ArtInChip chip-level headers usable by all vendor applications.
+AIC_CHIP_DIR := $(APPDIR)/../vendor/artinchip/chips/artinchips
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/include
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/include/hal
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/include/drv
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/include/uapi
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/include/peripheral
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/common/include
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/mpp/include
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/mpp/base/include
+CFLAGS += ${INCDIR_PREFIX}$(AIC_CHIP_DIR)/mpp/ge
