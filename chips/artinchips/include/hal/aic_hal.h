@@ -15,8 +15,11 @@ extern "C" {
 #include "aic_hal_clk.h"
 #include "aic_hal_gpio.h"
 #include "aic_hal_uart.h"
-#ifdef AIC_GE_DRV
+#ifdef CONFIG_AIC_GE_DRV
 #include "aic_hal_ge.h"
+#endif
+#ifdef CONFIG_AIC_VE_DRV
+#include "aic_hal_ve.h"
 #endif
 
 #ifdef __cplusplus

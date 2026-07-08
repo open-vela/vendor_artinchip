@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023, ArtInChip Technology Co., Ltd
+ * Copyright (c) 2022-2025, ArtInChip Technology Co., Ltd
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -38,20 +38,20 @@ extern "C" {
  * @GE_PD_DST:            fs: 0.0     fd: 1.0
  */
 enum ge_pd_rules {
-  GE_PD_NONE = 0,
-  GE_PD_CLEAR = 1,
-  GE_PD_SRC = 2,
-  GE_PD_SRC_OVER = 3,
-  GE_PD_DST_OVER = 4,
-  GE_PD_SRC_IN = 5,
-  GE_PD_DST_IN = 6,
-  GE_PD_SRC_OUT = 7,
-  GE_PD_DST_OUT = 8,
-  GE_PD_SRC_ATOP = 9,
-  GE_PD_DST_ATOP = 10,
-  GE_PD_ADD = 11,
-  GE_PD_XOR = 12,
-  GE_PD_DST = 13,
+	GE_PD_NONE           =  0,
+	GE_PD_CLEAR          =  1,
+	GE_PD_SRC            =  2,
+	GE_PD_SRC_OVER       =  3,
+	GE_PD_DST_OVER       =  4,
+	GE_PD_SRC_IN         =  5,
+	GE_PD_DST_IN         =  6,
+	GE_PD_SRC_OUT        =  7,
+	GE_PD_DST_OUT        =  8,
+	GE_PD_SRC_ATOP       =  9,
+	GE_PD_DST_ATOP       = 10,
+	GE_PD_ADD            = 11,
+	GE_PD_XOR            = 12,
+	GE_PD_DST            = 13,
 };
 /**
  * struct ge_ctrl - ge ctrl functions
@@ -89,16 +89,16 @@ enum ge_pd_rules {
  *         only supported by AIC_GE_BITBLT
  */
 struct ge_ctrl {
-  unsigned int alpha_en;
-  enum ge_pd_rules alpha_rules;
-  unsigned int src_alpha_mode;
-  unsigned int src_global_alpha;
-  unsigned int dst_alpha_mode;
-  unsigned int dst_global_alpha;
-  unsigned int ck_en;
-  unsigned int ck_value;
-  unsigned int dither_en;
-  unsigned int flags;
+	unsigned int       alpha_en;
+	enum ge_pd_rules   alpha_rules;
+	unsigned int       src_alpha_mode;
+	unsigned int       src_global_alpha;
+	unsigned int       dst_alpha_mode;
+	unsigned int       dst_global_alpha;
+	unsigned int       ck_en;
+	unsigned int       ck_value;
+	unsigned int       dither_en;
+	unsigned int       flags;
 };
 
 /*
@@ -114,9 +114,9 @@ struct ge_ctrl {
  *                  buttom
  */
 enum ge_fillrect_type {
-  GE_NO_GRADIENT = 0,
-  GE_H_LINEAR_GRADIENT = 1,
-  GE_V_LINEAR_GRADIENT = 2,
+	GE_NO_GRADIENT         = 0,
+	GE_H_LINEAR_GRADIENT   = 1,
+	GE_V_LINEAR_GRADIENT   = 2,
 };
 
 /**
@@ -136,11 +136,23 @@ enum ge_fillrect_type {
  * @ctrl: ge ctrl functions
  */
 struct ge_fillrect {
-  enum ge_fillrect_type type;
-  unsigned int start_color;
-  unsigned int end_color;
-  struct mpp_buf dst_buf;
-  struct ge_ctrl ctrl;
+	enum ge_fillrect_type  type;
+	unsigned int           start_color;
+	unsigned int           end_color;
+	struct mpp_buf         dst_buf;
+	struct ge_ctrl         ctrl;
+};
+
+struct ge_scale_phase {
+    int  scale_phase_en;
+    int  scaler_en;
+    int  channel_num;
+    int  dx_16[2];
+    int  dy_16[2];
+    int  h_phase_16[2];
+    int  v_phase_16[2];
+    int  in_w_ch1;
+    int  in_h_ch1;
 };
 
 /**
@@ -150,9 +162,10 @@ struct ge_fillrect {
  * @ctrl: ge ctrl functions
  */
 struct ge_bitblt {
-  struct mpp_buf src_buf;
-  struct mpp_buf dst_buf;
-  struct ge_ctrl ctrl;
+	struct mpp_buf   src_buf;
+	struct mpp_buf   dst_buf;
+	struct ge_ctrl   ctrl;
+    struct ge_scale_phase scale_phase;
 };
 
 /**
@@ -166,56 +179,50 @@ struct ge_bitblt {
  * @ctrl: ge ctrl functions
  */
 struct ge_rotation {
-  struct mpp_buf src_buf;
-  struct mpp_buf dst_buf;
-  struct mpp_point src_rot_center;
-  struct mpp_point dst_rot_center;
-  int angle_sin;
-  int angle_cos;
-  struct ge_ctrl ctrl;
+	struct mpp_buf        src_buf;
+	struct mpp_buf        dst_buf;
+	struct mpp_point      src_rot_center;
+	struct mpp_point      dst_rot_center;
+	int                   angle_sin;
+	int                   angle_cos;
+	struct ge_ctrl        ctrl;
 };
+
 
 enum ge_mode {
-  GE_MODE_NORMAL,
-  GE_MODE_CMDQ,
+	GE_MODE_NORMAL,
+	GE_MODE_CMDQ,
 };
 
-#define IOC_TYPE_GE 'G'
+#define IOC_TYPE_GE                'G'
 
-#define IOC_GE_VERSION                                                         \
-  _IOR(IOC_TYPE_GE, 0x00, unsigned int) //((IOC_TYPE_GE << 8) | 0x00)
+#define IOC_GE_VERSION             _IOR(IOC_TYPE_GE, 0x00, unsigned int) //((IOC_TYPE_GE << 8) | 0x00)
 
-#define IOC_GE_MODE                                                            \
-  _IOR(IOC_TYPE_GE, 0x01, enum ge_mode) //((IOC_TYPE_GE << 8) | 0x01)
+#define IOC_GE_MODE                _IOR(IOC_TYPE_GE, 0x01, enum ge_mode) //((IOC_TYPE_GE << 8) | 0x01)
 
-#define IOC_GE_FILLRECT                                                        \
-  _IOW(IOC_TYPE_GE, 0x02, struct ge_fillrect) //((IOC_TYPE_GE << 8) | 0x02)
+#define IOC_GE_FILLRECT            _IOW(IOC_TYPE_GE, 0x02, struct ge_fillrect) //((IOC_TYPE_GE << 8) | 0x02)
 
-#define IOC_GE_BITBLT                                                          \
-  _IOW(IOC_TYPE_GE, 0x03, struct ge_bitblt) //((IOC_TYPE_GE << 8) | 0x03)
+#define IOC_GE_BITBLT              _IOW(IOC_TYPE_GE, 0x03, struct ge_bitblt) //((IOC_TYPE_GE << 8) | 0x03)
 
-#define IOC_GE_ROTATE                                                          \
-  _IOW(IOC_TYPE_GE, 0x04, struct ge_rotation) //((IOC_TYPE_GE << 8) | 0x04)
+#define IOC_GE_ROTATE              _IOW(IOC_TYPE_GE, 0x04, struct ge_rotation) //((IOC_TYPE_GE << 8) | 0x04)
 
-#define IOC_GE_SYNC _IO(IOC_TYPE_GE, 0x10) //((IOC_TYPE_GE << 8) | 0x10)
+#define IOC_GE_SYNC                _IO(IOC_TYPE_GE, 0x10) //((IOC_TYPE_GE << 8) | 0x10)
 
-#define IOC_GE_CMD_BUF_SIZE                                                    \
-  _IOR(IOC_TYPE_GE, 0x11, unsigned int) //((IOC_TYPE_GE << 8) | 0x11)
+#define IOC_GE_CMD_BUF_SIZE        _IOR(IOC_TYPE_GE, 0x11, unsigned int) //((IOC_TYPE_GE << 8) | 0x11)
 
-#define IOC_GE_ADD_DMA_BUF                                                     \
-  _IOWR(IOC_TYPE_GE, 0x12, struct dma_buf_info) //((IOC_TYPE_GE << 8) | 0x12)
+#define IOC_GE_ADD_DMA_BUF         _IOWR(IOC_TYPE_GE, 0x12, struct dma_buf_info) //((IOC_TYPE_GE << 8) | 0x12)
 
-#define IOC_GE_RM_DMA_BUF                                                      \
-  _IOW(IOC_TYPE_GE, 0x13, struct dma_buf_info) //((IOC_TYPE_GE << 8) | 0x13)
+#define IOC_GE_RM_DMA_BUF          _IOW(IOC_TYPE_GE, 0x13, struct dma_buf_info) //((IOC_TYPE_GE << 8) | 0x13)
 
 int aic_ge_probe(void);
-struct aic_ge_client *aic_ge_open(void);
-int aic_ge_close(struct aic_ge_client *client);
-int aic_ge_write(struct aic_ge_client *client, const char *buff, size_t count);
-int aic_ge_ioctl(struct aic_ge_client *client, int cmd, void *arg);
+int aic_ge_open(void);
+int aic_ge_close(int fd);
+int aic_ge_write(int fd, const char *buff, size_t count);
+int aic_ge_ioctl(int fd, int cmd, void *arg);
 
 #if defined(__cplusplus)
 }
 #endif
 
 #endif /* _UAPI__ARTINCHIP_GE_H_ */
+

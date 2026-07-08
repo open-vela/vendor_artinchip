@@ -92,3 +92,7 @@ if AIC_USING_UART0 || AIC_USING_UART1 || AIC_USING_UART2 || AIC_USING_UART3
 source "../vendor/artinchip/chips/artinchips/drv/uart/Kconfig"
 endif
 
+source "../vendor/artinchip/chips/artinchips/drv/ge/Kconfig"
+
+source "../vendor/artinchip/chips/artinchips/drv/ve/Kconfig"
+

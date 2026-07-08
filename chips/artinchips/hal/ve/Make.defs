@@ -1,0 +1,15 @@
+ifeq ($(CONFIG_AIC_VE_DRV),y)
+
+VE_PATH=hal/ve
+
+DEPPATH+=--dep-path $(VE_PATH)
+VPATH+=:chip/$(VE_PATH)
+
+ARCH_VE_SRC_PATH:=$(AIC_SRCDIR)/$(VE_PATH)
+
+CFLAGS += ${INCDIR_PREFIX}$(ARCH_VE_SRC_PATH)
+CFLAGS += ${INCDIR_PREFIX}${INCLUDES}/include/hal
+
+CHIP_CSRCS += $(VE_PATH)/aic_hal_ve.c
+
+endif

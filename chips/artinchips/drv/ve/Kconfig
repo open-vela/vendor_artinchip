@@ -1,0 +1,30 @@
+config AIC_VE_DRV
+    bool "Video Engine (VE) driver"
+    default n
+    help
+      Enable Video Engine (VE) hardware codec driver.
+
+if AIC_VE_DRV
+
+choice
+    prompt "Select VE hardware version"
+    default AIC_VE_DRV_V40
+
+config AIC_VE_DRV_V10
+    bool "VE V1.0"
+    help
+      VE hardware version 1.0. Supports JPEG/PNG/H.264.
+
+config AIC_VE_DRV_V30
+    bool "VE V3.0"
+    help
+      VE hardware version 3.0. Supports JPEG/PNG.
+
+config AIC_VE_DRV_V40
+    bool "VE V4.0"
+    help
+      VE hardware version 4.0. Supports JPEG/PNG.
+      Includes SRAM mapping feature.
+endchoice
+
+endif

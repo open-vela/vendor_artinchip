@@ -52,6 +52,15 @@
 #include <nuttx/timers/watchdog.h>
 /* Include panel header for backlight control */
 #include <drv/display/panel/panel_com.h>
+
+#ifdef CONFIG_AIC_GE_DRV
+#include <drv/aic_drv_ge.h>
+#endif
+
+#ifdef CONFIG_AIC_VE_DRV
+#include <drv/aic_drv_ve.h>
+#endif
+
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
@@ -162,6 +171,22 @@ void d12x_board_late_initialize(void) {
   extern int aic_mmcsd_initialize(int);
   syslog(LOG_INFO, "Start to initialize SDMC driver\n");
   aic_mmcsd_initialize(1);
+#endif
+
+#ifdef CONFIG_AIC_GE_DRV
+  syslog(LOG_INFO, "Start to initialize GE driver\n");
+  ret = aic_ge_probe();
+  if (ret < 0) {
+    syslog(LOG_ERR, "Failed to initialize GE driver: %d\n", ret);
+  }
+#endif
+
+#ifdef CONFIG_AIC_VE_DRV
+  syslog(LOG_INFO, "Start to initialize VE driver\n");
+  ret = aic_ve_probe();
+  if (ret < 0) {
+    syslog(LOG_ERR, "Failed to initialize VE driver: %d\n", ret);
+  }
 #endif
 }
 

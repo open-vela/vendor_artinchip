@@ -1,0 +1,45 @@
+config AIC_GE_DRV
+    bool "Graphics Engine (GE) driver"
+    default n
+    help
+      Enable Graphics Engine (GE) 2D hardware accelerator driver.
+      Supports FILLRECT, BITBLT, ROTATE operations with alpha blending,
+      color space conversion, scaling, and CMDQ batch mode.
+
+if AIC_GE_DRV
+
+choice
+    prompt "Select Graphics Engine Mode"
+    default AIC_GE_NORMAL
+
+config AIC_GE_CMDQ
+    bool "CMD queue mode"
+    help
+      Enable CMD Queue
+
+config AIC_GE_NORMAL
+    bool "normal mode"
+    help
+      Disable CMD Queue
+endchoice
+
+config AIC_GE_DITHER
+    bool "Dither function"
+    default y
+    help
+        Turning off the Dither function can save memory about 16K bytes.
+
+config AIC_GE_CMDQ_BUF_LENGTH
+    depends on AIC_GE_CMDQ
+    int "CMDQ queue buffer"
+    range 1024 16384
+    default 2048
+
+config AIC_GE_DRV_V11
+    bool "GE hardware version V1.1"
+    default y
+    help
+      Enable if SoC has GE hardware version 1.1.
+      If not set, uses default (V1.0) register layout.
+
+endif

@@ -1,0 +1,23 @@
+ifeq ($(CONFIG_AIC_GE_DRV),y)
+
+GE_PATH=hal/ge
+
+DEPPATH+=--dep-path $(GE_PATH)
+VPATH+=:chip/$(GE_PATH)
+
+ARCH_GE_SRC_PATH:=$(AIC_SRCDIR)/$(GE_PATH)
+
+CFLAGS += ${INCDIR_PREFIX}$(ARCH_GE_SRC_PATH)
+CFLAGS += ${INCDIR_PREFIX}${INCLUDES}/include/hal
+
+CHIP_CSRCS += $(GE_PATH)/hal_ge_hw.c
+
+ifeq ($(CONFIG_AIC_GE_NORMAL),y)
+CHIP_CSRCS += $(GE_PATH)/hal_ge_normal.c
+endif
+
+ifeq ($(CONFIG_AIC_GE_CMDQ),y)
+CHIP_CSRCS += $(GE_PATH)/hal_ge_cmdq.c
+endif
+
+endif

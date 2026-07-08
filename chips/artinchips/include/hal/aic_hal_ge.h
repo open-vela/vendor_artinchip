@@ -20,6 +20,7 @@ struct aic_ge_client {
   struct list_head buf_list;
   int id;
   int batch_num;
+  void *priv;  /* back-pointer to HAL private data */
 };
 
 int hal_ge_init(void);
