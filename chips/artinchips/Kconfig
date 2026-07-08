@@ -82,7 +82,8 @@ endif
 source "../vendor/artinchip/chips/artinchips/drv/Kconfig"
 source "../vendor/artinchip/chips/artinchips/hal/Kconfig"
 
-endmenu
+source "../vendor/artinchip/chips/artinchips/mpp/Kconfig"
 
+endmenu
 
 endif

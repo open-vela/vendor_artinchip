@@ -38,9 +38,9 @@ include $(AIC_VENDOR_DIR)/chips/artinchips/common/Make.defs
 
 # Arch/Chip specific files
 ifeq ($(CONFIG_ARCH_CHIP_D12X),y)
+CFLAGS += -DAIC_CHIP_D12X
 include $(AIC_VENDOR_DIR)/chips/artinchips/d12x/Make.defs
 endif
-
 
 
 # HAL Drivers: Display Engine (DE)
@@ -94,7 +94,8 @@ CFLAGS += -I$(TOPDIR)../nuttx/include/nuttx
 
 CXXFLAGS += -DARTINCHIP_GIT_REVERSION=\"$(AIC_GIT_REV)\"
 
-
+# MPP library
+include $(AIC_VENDOR_DIR)/chips/artinchips/mpp/Make.defs
 
 endif
 endif
