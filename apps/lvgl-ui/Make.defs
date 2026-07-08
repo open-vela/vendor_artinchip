@@ -1,0 +1,3 @@
+ifeq ($(CONFIG_AIC_LVGL_DEMO_APP),y)
+CONFIGURED_APPS += $(APPDIR)/vendor/artinchip/apps/lvgl-ui
+endif

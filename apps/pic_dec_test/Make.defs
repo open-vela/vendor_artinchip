@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2024 ArtInChip Technology Co., Ltd.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+ifeq ($(CONFIG_AIC_PIC_DEC_TEST),y)
+CONFIGURED_APPS += $(APPDIR)/vendor/artinchip/apps/pic_dec_test
+endif
