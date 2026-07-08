@@ -173,11 +173,13 @@ delay_loop:
     addi    t2, t2, -1
     bnez    t2, delay_loop
 
-    /* DEBUG: Memory Check at 0x40100000 (Away from code text) */
+    /* DEBUG: Memory Check at 0x40100000 */
     li      t3, 0x40100000
+    lw      t6, 0(t3)           /* Save original instruction */
     li      t4, 0x55aa55aa
-    sw      t4, 0(t3)           /* Write pattern */
+    sw      t4, 0(t3)           /* Write test pattern */
     lw      t5, 0(t3)           /* Read back */
+    sw      t6, 0(t3)           /* Restore original instruction */
     bne     t4, t5, mem_fail    /* If not match, jump to fail loop */
 
     /* Simple delay 2 */
@@ -199,4 +201,3 @@ mem_fail:
 
 __exit:
     j      __exit
-
