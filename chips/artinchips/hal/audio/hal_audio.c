@@ -585,7 +585,7 @@ static void audio_tx_isr_32bit(hal_audio_handle_t *haudio) {
  *
  * @warning Must only be called from DMA interrupt context.
  */
-static void audio_dma_half_task_callback(hal_dma_handle_t *hdma) {
+__attribute__((unused)) static void audio_dma_half_task_callback(hal_dma_handle_t *hdma) {
     hal_audio_handle_t *haudio = (hal_audio_handle_t *)((hal_dma_handle_t *)hdma)->parent;
   if (haudio->tx_dma_cb)
     haudio->tx_dma_cb(haudio);

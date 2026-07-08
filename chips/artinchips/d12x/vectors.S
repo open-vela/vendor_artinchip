@@ -96,6 +96,7 @@ Default_IRQHandler:
     /* t1 = irq_num */
     csrr    t1, mcause
     andi    t1, t1, 0x3FF
+    addi    t1, t1, 16 /* RISCV_IRQ_ASYNC */
     slli    t1, t1, 2
     /* irq_handler_func(): t2 = g_irqvector[irq_num] */
     la      t0, g_irqvector

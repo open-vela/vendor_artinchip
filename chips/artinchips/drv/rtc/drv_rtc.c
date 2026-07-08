@@ -44,7 +44,7 @@
 
 static char g_rtc_tz;
 static struct tm g_local_tm;
-static char g_local_time_str[32];
+static char g_local_time_str[64];
 
 static int rtc_is_leap(int year) {
   return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
