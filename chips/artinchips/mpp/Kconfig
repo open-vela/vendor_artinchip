@@ -1,0 +1,30 @@
+config AIC_MPP
+    bool "Media Processing Pipeline (MPP)"
+    default n
+    help
+      Enable ArtInChip Media Processing Pipeline.
+      Provides high-level API for GE (Graphics Engine) and VE (Video Engine).
+
+if AIC_MPP
+
+config AIC_MPP_LOG_LEVEL
+	int "MPP log level (0=err 1=warn 2=info 3=debug)"
+	default 0
+	range 0 3
+	help
+	  Control the MPP log verbosity:
+	  0 = Error only
+	  1 = Error + Warning
+	  2 = Error + Warning + Info
+	  3 = Error + Warning + Info + Debug
+
+config AIC_PIC_DEC_TEST
+    bool "Picture decode test (pic_dec_test)"
+    depends on AIC_VE_DRV
+    default n
+    help
+      Picture decode test application. Decodes JPEG/PNG images
+      using VE hardware decoder and displays via GE + FB.
+      Usage: pic_dec_test -i <input_file> [-f <format>] [-r <rotate>] [-s <scale>]
+
+endif # AIC_MPP

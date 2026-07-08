@@ -1,0 +1,68 @@
+#
+# Copyright (c) 2024, ArtInChip Technology Co., Ltd.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+ifeq ($(CONFIG_AIC_MPP),y)
+
+MPP_PATH = mpp
+MPP_SRC   = $(AIC_SRCDIR)/$(MPP_PATH)
+
+DEPPATH  += --dep-path $(MPP_PATH)/base/memory
+DEPPATH  += --dep-path $(MPP_PATH)/ge
+DEPPATH  += --dep-path $(MPP_PATH)/fb
+DEPPATH  += --dep-path $(MPP_PATH)/ve/common
+DEPPATH  += --dep-path $(MPP_PATH)/ve/decoder
+DEPPATH  += --dep-path $(MPP_PATH)/ve/decoder/jpeg
+DEPPATH  += --dep-path $(MPP_PATH)/ve/decoder/png
+DEPPATH  += --dep-path $(MPP_PATH)/ve/decoder/zlib
+
+VPATH    += :$(MPP_PATH)/base/memory
+VPATH    += :$(MPP_PATH)/ge
+VPATH    += :$(MPP_PATH)/fb
+VPATH    += :$(MPP_PATH)/ve/common
+VPATH    += :$(MPP_PATH)/ve/decoder
+VPATH    += :$(MPP_PATH)/ve/decoder/jpeg
+VPATH    += :$(MPP_PATH)/ve/decoder/png
+VPATH    += :$(MPP_PATH)/ve/decoder/zlib
+VPATH    += :chip
+
+CFLAGS   += ${INCDIR_PREFIX}$(MPP_SRC)/include
+CFLAGS   += ${INCDIR_PREFIX}$(MPP_SRC)/base/include
+CFLAGS   += ${INCDIR_PREFIX}$(MPP_SRC)/ge
+CFLAGS   += ${INCDIR_PREFIX}$(MPP_SRC)/ve/include
+CFLAGS   += ${INCDIR_PREFIX}$(MPP_SRC)/mpp_test
+
+# Test: pic_dec_test is built via apps/pic_dec_test/Makefile
+
+# Base
+CHIP_CSRCS += $(MPP_PATH)/base/memory/mpp_mem.c
+
+# GE
+ifeq ($(CONFIG_AIC_GE_DRV),y)
+CHIP_CSRCS += $(MPP_PATH)/ge/mpp_ge.c
+CHIP_CSRCS += $(MPP_PATH)/ge/ge_adapter.c
+CHIP_CSRCS += $(MPP_PATH)/ge/cmdq_ops.c
+CHIP_CSRCS += $(MPP_PATH)/ge/normal_ops.c
+endif
+
+# FB
+CHIP_CSRCS += $(MPP_PATH)/fb/mpp_fb.c
+
+# VE
+ifeq ($(CONFIG_AIC_VE_DRV),y)
+CHIP_CSRCS += $(MPP_PATH)/ve/common/ve.c
+CHIP_CSRCS += $(MPP_PATH)/ve/common/ve_adapter.c
+CHIP_CSRCS += $(MPP_PATH)/ve/common/ve_buffer.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/mpp_decoder.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/packet_manager.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/frame_manager.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/jpeg/mjpeg_decoder.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/jpeg/jpeg_hal.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/png/png_decoder.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/png/png_hal.c
+CHIP_CSRCS += $(MPP_PATH)/ve/decoder/zlib/zlib_uncompress.c
+endif
+
+endif
